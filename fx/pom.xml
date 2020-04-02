@@ -11,7 +11,7 @@
     <groupId>com.xls.fx</groupId>
     <artifactId>fx</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>fx</name>
+    <name>fx-繁星</name>
     <description>this is a service support program</description>
 
     <properties>
