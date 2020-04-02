@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+
+
+  <!--1.如果在web.xml中不写任何配置参数信息，默认路径是/WEB-INF/applicationContext.xml，在WEB-INF目录下创建的xml文件名必须是applicationContext.xml
+  	 	  自定义的文件名可以在web.xml里加入contextConfigLocation这个参数
+  		 <param-value>中指定相应的xml文件名，入有多个中间使用“,”隔开，可以使用通配符
+  	 	 无论是默认放入/WEB-INF/文件夹还是配置参数  都需要加入监听器 listener
+  		 配置需要加载的spring配置文件 (给监听器使用)-->
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+
+  <!--ContextLoaderListener监听器的所用就是启动web容器时，自动装配ApplicationContext.xml的配置信息
+    	ContextLoaderListener会读取xml文件产生的WebApplicationContext对象，然后将这个对象
+    	设置在ServletContext的属性里，这样我们只要可以得到Servlet就可以得到WebApplicationContext对象
+    	并利用这个对象访问spring容器管理的bean	-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- 配置前端请求控制器（dispatcherServlet）将请求映射到控制器 -->
+  <servlet>
+    <servlet-name>xc-dispatcher-servlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>WEB-INF/xc-dispatcher-servlet.xml</param-value>
+    </init-param>
+    <!-- 配置加载优先级 -->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>xc-dispatcher-servlet</servlet-name>
+    <!-- 过滤.do的请求 -->
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+
+
+
+
+  <!-- 配置编码过滤器 -->
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+</web-app>

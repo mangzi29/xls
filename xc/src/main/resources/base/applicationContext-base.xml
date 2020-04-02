@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <context:property-placeholder location="classpath:/base/base.properties" file-encoding="UTF-8" ignore-unresolvable="true"/>
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <!-- 数据库基本信息配置 -->
+        <property name="driverClassName" value="${jdbc.class}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="defaultAutoCommit" value="true"></property>
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1"/>
+        <property name="minIdle" value="1"/>
+        <property name="maxActive" value="20"/>
+
+        <property name="useUnfairLock" value="true"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat"/>
+    </bean>
+
+    <!-- 定义Hibernate的SessionFactory，SessionFactory需要依赖数据源，注入dataSource -->
+    <bean id="sessionFactory"  class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 注解的实体类通过此扫描的方式注入-->
+        <property name="packagesToScan" >
+            <list>
+                <value>com.xls.xc.xpy.vo</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.connection.autocommit">${hibernate.connection.autocommit}</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <!--自动创建表结构-->
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+    <!-- 对数据源进行事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+ <!--    redis连接池的配置
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="100"/>
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.host}" type="java.lang.String" />
+        <constructor-arg index="2" value="${redis.port}" type="int"/>
+    </bean>
+
+    <bean id="antiSamy" class="org.owasp.validator.html.AntiSamy"/>
+
+     阿里云存储
+    <bean id="ossClient" class="com.aliyun.oss.OSSClient">
+        <constructor-arg value="${aliyunOssEndpoint}"/>
+        <constructor-arg value="${aliyunOssAccessKeyId}"/>
+        <constructor-arg value="${aliyunOssAccessKeySecret}"/>
+    </bean>
+
+    <bean contractId="client" class="com.qiyuesuo.sdk.SDKClient">
+    <constructor-arg value="${qiyuesuoUrl}" index="0"></constructor-arg>
+    <constructor-arg value="${qiyuesuoKeyId}" index="1"></constructor-arg>
+    <constructor-arg value="${qiyuesuoKeySecret}" index="2"></constructor-arg>
+    </bean>
+    <bean contractId="localSignService" class="com.qiyuesuo.sdk.impl.LocalSignServiceImpl">
+    <constructor-arg ref="client">
+    </constructor-arg>
+    </bean>
+
+    <bean contractId="sealService" class="    com.qiyuesuo.sdk.impl.SealServiceImpl">
+    <constructor-arg ref="client">
+    </constructor-arg>
+    </bean>
+
+    使用本地存储
+    <bean id="uploadHelper" class="net.elshop.common.util.upload.LocalUploadHelper"/>
+    使用阿里云存储
+    <bean contractId="uploadHelper" class="net.elshop.common.util.upload.OssUploadHelper"/>-->
+
+</beans>
