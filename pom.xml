@@ -23,7 +23,7 @@
 
     <spring.version>4.2.1.RELEASE</spring.version>
     <hibernate.version>4.3.11.Final</hibernate.version>
-    <shiro.version>1.2.6</shiro.version>
+    <shiro.version>1.5.2</shiro.version>
     <cxf.version>2.4.2</cxf.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
