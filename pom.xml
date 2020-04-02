@@ -21,7 +21,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <spring.version>4.2.1.RELEASE</spring.version>
+    <spring.version>5.2.5.RELEASE</spring.version>
     <hibernate.version>4.3.11.Final</hibernate.version>
     <shiro.version>1.2.6</shiro.version>
     <cxf.version>2.4.2</cxf.version>
